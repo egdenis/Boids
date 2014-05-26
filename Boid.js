@@ -1,5 +1,5 @@
 
-function Boid(x,y){
+function Boid(near,x,y){
 	this.x = x||Math.random() * canvas.width;
 	this.y = y||Math.random() * canvas.height;
 	this.angle =  Math.random()*2*Math.PI;
@@ -7,7 +7,8 @@ function Boid(x,y){
 	this.rotation_speed = .025;
 	this.color = [0,0,0];
 	this.color_value = 0;
-	this.size = 2;
+	this.size = 2,
+	this.near_value = near;
 }
 
 Boid.prototype.rotate_towards = function(direction, coefficient){
@@ -109,11 +110,12 @@ Boid.prototype.increment_color = function(boids){
 }
 
 Boid.prototype.increment_score = function(){
-	for (var i = 0; i < GAME.players.length; i++) {
-		if(arraysEqual(GAME.players[i].color,this.color)){
-			GAME.players[i].score+=this.color_value/15000;
-			if (GAME.players[i].score>=GAME.MAX_SCORE&&GAME.state == "game") {
-				GAME.players[i].win();
+	var players = GAME.players.toArray();
+	for (var i = 0; i < players.length; i++) {
+		if(arraysEqual(players[i].color,this.color)){
+			players[i].score+=this.color_value/15000;
+			if (players[i].score>=GAME.max_score&&GAME.state == "game") {
+				players[i].win();
 			};
 		}
 	};
@@ -140,7 +142,7 @@ Boid.prototype.act = function(boids){
 
 		this.decrement_color();
 		if (GAME.state == "game") {
-			this.increment_score();
+			//this.increment_score();
 		}
 		this.move();	
 		this.draw();	

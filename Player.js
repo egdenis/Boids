@@ -1,4 +1,4 @@
-Player.prototype = new Boid(100,100)
+Player.prototype = new Boid(10,100,100)
 
 
 function Player(color,keys){
@@ -25,7 +25,7 @@ Player.prototype.control = function(){
 Player.prototype.draw_score = function(){
 	
 	ctx.fillStyle = this.rgba_color();
-	ctx.fillRect(0,0,this.score*canvas.width/GAME.MAX_SCORE,15);
+	ctx.fillRect(0,0,this.score*canvas.width/GAME.max_score,15);
 }
 
 Player.prototype.act = function(){
@@ -37,6 +37,6 @@ Player.prototype.act = function(){
 Player.prototype.win = function(){
 	GAME.state = "win";
 	GAME.ui.boxes[2].strokeStyle = this.rgba_color();
-	GAME.ui.boxes[2].text = colorName(this.color) + " win!"
+	GAME.ui.boxes[2].text = colorName(this.color) + " wins!"
 	GAME.ui.boxes[2].lineWidth = .8
 }

@@ -1,22 +1,23 @@
 
-AIBoid.prototype = new Boid(100,100);
+AIBoid.prototype = new Boid(10,100,100);
 
 
-function AIBoid(color,keys){
+function AIBoid(near,color,keys){
 	this.x = Math.random() * canvas.width;
 	this.y = Math.random() * canvas.height;
 	this.color = color;
 	this.keys = keys;
 	this.angle =  Math.random()*2*Math.PI;
-	this.color_value = 1650
+	this.color_value = 1250
 	this.speed = 1.45;
 	this.size = 4;
 	this.score = 0;
 	this.win = Player.prototype.win;
+	this.near_value = near;
 }
 
 AIBoid.prototype.act = function(boids){
-	var near = near_boids(50, this, boids),
+	var near = near_boids(this.near_value, this, boids),
 			too_near = near_boids(40,  this, near),
 			average_location_flock = average_location(near);
 

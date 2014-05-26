@@ -1,13 +1,12 @@
 
 function onMousedown(e){
 	var pos = getMousePos(canvas, e);
-		for (var i = 0; i < GAME.ui.buttons.length; i++) {
+	for (var i = 0; i < GAME.ui.buttons.length; i++) {
 
-			if (GAME.ui.buttons[i].isClicked(pos.x,pos.y)&&GAME.state == GAME.ui.buttons[i].state) {
-				GAME.ui.buttons[i].callback();
-			};
+		if (GAME.ui.buttons[i].isClicked(pos.x,pos.y)&&GAME.state == GAME.ui.buttons[i].state) {
+			GAME.ui.buttons[i].callback();
 		};
-	
+	};	
 }
 
 
@@ -81,43 +80,47 @@ function distance(boid1, boid2) {
 
 
 function onKeydown(e){
-	var k = e.keyCode;
-	for (var i = GAME.players.length - 1; i >= 0; i--) {
+	var k = e.keyCode,
+		players = GAME.players.toArray();
+	for (var i = players.length - 1; i >= 0; i--) {
 		switch (k) {
 		
-			case (GAME.players[i].keys.left[0]): // Left
-					GAME.players[i].keys.left[1]=true;
+			case (players[i].keys.left[0]): // Left
+					players[i].keys.left[1]=true;
 				break;
 			
-			case (GAME.players[i].keys.right[0]): // Right
-					GAME.players[i].keys.right[1]=true;
+			case (players[i].keys.right[0]): // Right
+					players[i].keys.right[1]=true;
 				break;
 		};
 	};	
 }
 
 function onKeyup(e) {
-	var k  = e.keyCode;
-	for (var i = GAME.players.length - 1; i >= 0; i--) {
+	var k = e.keyCode,
+		players = GAME.players.toArray();
+	for (var i = players.length - 1; i >= 0; i--) {
 		switch (k) {
-
-			case GAME.players[i].keys.left[0]: // Left
-				GAME.players[i].keys.left[1]= false;
+		
+			case (players[i].keys.left[0]): // Left
+					players[i].keys.left[1]=false;
 				break;
-
-			case GAME.players[i].keys.right[0]: // Right
-				GAME.players[i].keys.right[1]= false;
+			
+			case (players[i].keys.right[0]): // Right
+					players[i].keys.right[1]=false;
 				break;
 		};
-	}
-
+	};
 };
 
 function draw_score(){
-	for (var i = 0; i <GAME.players.length ; i++) {
-			var xStart = ((i-1>-1) ? GAME.players[i-1].score*canvas.width/GAME.MAX_SCORE : 0);
-			ctx.fillStyle = GAME.players[i].rgba_color(.1);
-			ctx.fillRect(xStart,0,GAME.players[i].score*canvas.width/GAME.MAX_SCORE-xStart,15)	
+	var players = GAME.players.toArray().sort(function(a, b){
+		return a.score-b.score;
+	})
+	for (var i = 0; i <players.length ; i++) {
+			var xStart = ((i-1>-1) ? players[i-1].score*canvas.width/GAME.max_score : 0);
+			ctx.fillStyle = players[i].rgba_color(.1);
+			ctx.fillRect(xStart,0,players[i].score*canvas.width/GAME.max_score-xStart,15)	
 	}
 }
 
@@ -157,6 +160,10 @@ function arraysEqual(arr1, arr2) {
     }
 
     return true;
+}
+
+function mod(m, n) {
+        return ((m % n) + n) % n;
 }
 
 var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
