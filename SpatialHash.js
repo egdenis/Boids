@@ -1,27 +1,62 @@
 function SpatialHash(cell_size,boundsX,boundsY){
 	this.cell_size = cell_size;
 	this.bounds = [Math.ceil(boundsX/cell_size),Math.ceil(boundsY/cell_size)];
-	this.grid = new Array(Math.ceil(boundsX/cell_size));
+	this.grid;
+	this.clear();
+}	
+
+SpatialHash.prototype.clear = function(){
+	console.log(this.bounds[1]+1/this.cell_size)
+	this.grid = new Array(this.bounds[0]);
 	for (var i = this.grid.length - 1; i >= 0; i--) {
-		this.grid[i] = new Array(Math.ceil(boundsY/cell_size));
+		this.grid[i] = new Array(this.bounds[1]);
 		for (var x = this.grid[i].length - 1; x >= 0; x--) {
 			this.grid[i][x]=[];
 		};
 	};
-}	
+}
 
 SpatialHash.prototype.put = function(obj){
 	var bucket = getBucket(this.cell_size,obj);
-	this.grid[bucket[0]][bucket[1]].push(obj);
+	if (this.grid[bucket[0]]==undefined) {console.log(bucket)}
+	else
+		this.grid[bucket[0]][bucket[1]].push(obj);
 }
 
+SpatialHash.prototype.drawGrid = function(){
+	for (var y = 0; y < this.bounds[1]; y++){
+		for (var x = 0; x < this.bounds[0]; x++){
+			ctx.strokeRect(x*this.cell_size,y*this.cell_size,this.cell_size,this.cell_size);			
+		};
+	};
+}
 
+SpatialHash.prototype.getOccupiedBucket = function(){
+	var contents;
+	for (var y = 0; y < this.bounds[1]; y++){
+		for (var x = 0; x < this.bounds[0]; x++){
+			if(this.grid[x][y].length>2)
+				contents = ([x,y])
+		};
+	};
+	console.log(this.get(contents,0) )
+	console.log(this.grid[contents[0]][contents[1]])
+	console.log(contents)
+	return contents;
+}
 
 SpatialHash.prototype.get = function(bucket,index){
-	if (this.grid[bucket[0]][bucket[1]]) 
-		return ((index)?this.grid[bucket[0]][bucket[1]][index]:this.grid[bucket[0]][bucket[1]]);
-	else
-		throw "bucket " + bucket +" non-existant"; //if bucket exist then return bucket or bucket index else throw error
+
+	if (index!=undefined) {
+		var copy = this.grid[bucket[0]][bucket[1]].slice();
+		copy.splice(index,1)
+		return copy;
+	}
+	else {
+		return this.grid[bucket[0]][bucket[1]]
+	}
+	
+ //if bucket exist then return bucket or bucket index else throw error
 }
 
 SpatialHash.prototype.set = function(bucket,value,index){
@@ -39,25 +74,35 @@ SpatialHash.prototype.getContents = function(){
 	};
 	return contents;
 }
-SpatialHash.prototype.relocate = function(bucket,index){
-	var obj = this.grid[bucket[0]][bucket[1]][index],
-		currentBucket = getBucket(this.cell_size,obj);
-	if (currentBucket[0]!=bucket[0]||currentBucket[1]!=bucket[1]) {
-		this.put(obj);
-		this.remove(bucket,index);
+SpatialHash.prototype.relocate = function(){
+	for (var x = this.grid.length - 1; x >= 0; x--) {
+		for (var y = this.grid[x].length - 1; y >= 0; y--) {
+			for (var i = this.grid[x][y].length - 1; i >= 0; i--) {
+
+				var obj = this.grid[x][y][i],
+					currentBucket = getBucket(this.cell_size,obj);
+
+				if (currentBucket[0]!=x||currentBucket[1]!=y) {
+					this.put(obj);
+					this.remove([x,y],i);
 		
+				};
+			
+			};
+		};
 	};
+	
 }
 
-SpatialHash.prototype.getSurroundingCellContents = function(bucket){
-	return this.get(bucket).concat(this.get([(bucket[0]+1)%this.bounds[0],bucket[1]]), 						//center, right center
-								   this.get([bucket[0],(bucket[1]+1)%this.bounds[1]]), 						//bottom center
-								   this.get([(bucket[0]+1)%this.bounds[0],(bucket[1]+1)%this.bounds[1]]), 		//corner bottom right
-								   this.get([mod(bucket[0]-1,this.bounds[0]),bucket[1]]), 					//left center
-								   this.get([bucket[0],mod(bucket[1]-1,this.bounds[1])]), 					//top center
-								   this.get([mod(bucket[0]-1,this.bounds[0]),mod(bucket[1]-1,this.bounds[1])]), //corner top left
-								   this.get([(bucket[0]+1)%this.bounds[0],mod(bucket[1]-1,this.bounds[1])]), 	//corner top right
-								   this.get([mod(bucket[0]-1,this.bounds[0]),(bucket[1]+1)%this.bounds[1]]));	//corner bottom left
+SpatialHash.prototype.getSurroundingCellContents = function(bucket,index){
+	return this.get(bucket,index).concat(this.grid[(bucket[0]+1)%this.bounds[0]][bucket[1]], 						//center, right center
+								   this.grid[bucket[0]][(bucket[1]+1)%this.bounds[1]], 						//bottom center
+								   this.grid[(bucket[0]+1)%this.bounds[0]][(bucket[1]+1)%this.bounds[1]], 		//corner bottom right
+								   this.grid[mod(bucket[0]-1,this.bounds[0])][bucket[1]], 				//left center
+								   this.grid[bucket[0]][mod(bucket[1]-1,this.bounds[1])], 					//top center
+								   this.grid[mod(bucket[0]-1,this.bounds[0])][mod(bucket[1]-1,this.bounds[1])], //corner top left
+								   this.grid[(bucket[0]+1)%this.bounds[0]][mod(bucket[1]-1,this.bounds[1])], 	//corner top right
+								   this.grid[mod(bucket[0]-1,this.bounds[0])][(bucket[1]+1)%this.bounds[1]]);	//corner bottom left
 }
 
 SpatialHash.prototype.toString = function(){

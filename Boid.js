@@ -80,7 +80,6 @@ Boid.prototype.decrement_color = function(value){
 }
 
 Boid.prototype.increment_color = function(boids){
-
 	var max = 0, //color value of most colorful boid
 		color = [0,0,0];
 			//color of most colorful boid
@@ -93,12 +92,12 @@ Boid.prototype.increment_color = function(boids){
 	};
 	
 	
-	if (arraysEqual(this.color, [0,0,0])) {
+	if (this.color[0]+this.color[1]+this.color[2]==0 ) {
 		this.color = color;
 		this.color_value+=max/200
 	}
 
-	else if (arraysEqual(this.color, color)){
+	else if (this.color[0]==color[0]&&this.color[1]==color[1]&&this.color[2]==color[2]){
 		this.color_value+=max/200
 	}
 	else
@@ -110,15 +109,7 @@ Boid.prototype.increment_color = function(boids){
 }
 
 Boid.prototype.increment_score = function(){
-	var players = GAME.players.toArray();
-	for (var i = 0; i < players.length; i++) {
-		if(arraysEqual(players[i].color,this.color)){
-			players[i].score+=this.color_value/15000;
-			if (players[i].score>=GAME.max_score&&GAME.state == "game") {
-				players[i].win();
-			};
-		}
-	};
+	GAME.score[this.color[0]][this.color[1]][this.color[2]] += this.color_value/15000;
 }
 
 Boid.prototype.rgba_color = function(r){
@@ -126,11 +117,15 @@ Boid.prototype.rgba_color = function(r){
 }
 
 Boid.prototype.act = function(boids){
-		var near = near_boids(60, this, boids),
+		var near = near_boids(this.near_value, this, boids),
 			too_near = near_boids(30,  this, near),
 			average_location_flock = average_location(near);
 
+			ctx.strokeStyle = this.rgba_color();
+
+			
 		if (near.length>0){
+
 			this.rotate_towards(average_direction(near))
 			this.rotate_towards(direction_to(this, average_location_flock),.3);
 			this.increment_color(near);
@@ -141,9 +136,18 @@ Boid.prototype.act = function(boids){
 		}
 
 		this.decrement_color();
-		if (GAME.state == "game") {
-			//this.increment_score();
-		}
+		this.increment_score();
 		this.move();	
 		this.draw();	
 }
+
+/*
+draw lines
+for (var i = near.length - 1; i >= 0; i--) {
+				ctx.beginPath();
+				ctx.moveTo(this.x,this.y)
+				ctx.lineTo(near[i].x,near[i].y)
+				ctx.closePath();
+				ctx.stroke();
+			};
+			*/

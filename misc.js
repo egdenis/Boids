@@ -1,6 +1,7 @@
 
 function onMousedown(e){
 	var pos = getMousePos(canvas, e);
+
 	for (var i = 0; i < GAME.ui.buttons.length; i++) {
 
 		if (GAME.ui.buttons[i].isClicked(pos.x,pos.y)&&GAME.state == GAME.ui.buttons[i].state) {
@@ -82,6 +83,7 @@ function distance(boid1, boid2) {
 function onKeydown(e){
 	var k = e.keyCode,
 		players = GAME.players.toArray();
+
 	for (var i = players.length - 1; i >= 0; i--) {
 		switch (k) {
 		
@@ -99,6 +101,7 @@ function onKeydown(e){
 function onKeyup(e) {
 	var k = e.keyCode,
 		players = GAME.players.toArray();
+
 	for (var i = players.length - 1; i >= 0; i--) {
 		switch (k) {
 		
@@ -113,6 +116,21 @@ function onKeyup(e) {
 	};
 };
 
+function increment_score(){
+	for (var x = GAME.players.grid.length-1; x >= 0; x--) {
+		for (var y = GAME.players.grid[x].length - 1; y >= 0; y--) {
+			for (var i = 0; i < GAME.players.grid[x][y].length; i++) {
+				var boid = GAME.players.grid[x][y][i]
+				boid.score+=GAME.score[boid.color[0]][boid.color[1]][boid.color[2]];
+				if (boid.score>=GAME.max_score&&GAME.state == "game") {
+					boid.win();
+				}
+			};
+
+		}
+	};
+}
+
 function draw_score(){
 	var players = GAME.players.toArray().sort(function(a, b){
 		return a.score-b.score;
@@ -120,8 +138,10 @@ function draw_score(){
 	for (var i = 0; i <players.length ; i++) {
 			var xStart = ((i-1>-1) ? players[i-1].score*canvas.width/GAME.max_score : 0);
 			ctx.fillStyle = players[i].rgba_color(.1);
-			ctx.fillRect(xStart,0,players[i].score*canvas.width/GAME.max_score-xStart,15)	
+			ctx.fillRect(xStart,0,players[i].score*canvas.width/GAME.max_score-xStart,15)
 	}
+		GAME.score = [[[0,0],[0,0]] , [[0,0],[0,0]]];
+
 }
 
 function Keys(r,l){
@@ -163,8 +183,10 @@ function arraysEqual(arr1, arr2) {
 }
 
 function mod(m, n) {
-        return ((m % n) + n) % n;
+        return (m<0)?n+m:m;
 }
+
+
 
 var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
 

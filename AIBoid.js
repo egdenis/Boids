@@ -1,5 +1,5 @@
 
-AIBoid.prototype = new Boid(10,100,100);
+AIBoid.prototype = new Boid(1000,100,100);
 
 
 function AIBoid(near,color,keys){
@@ -17,6 +17,7 @@ function AIBoid(near,color,keys){
 }
 
 AIBoid.prototype.act = function(boids){
+
 	var near = near_boids(this.near_value, this, boids),
 			too_near = near_boids(40,  this, near),
 			average_location_flock = average_location(near);

@@ -18,8 +18,10 @@ function Player(color,keys){
 Player.prototype.control = function(){
 	if (this.keys.right[1])
 		this.angle+=this.rotation_speed*2;
-	if (this.keys.left[1])
+	if (this.keys.left[1]){
 		this.angle-=this.rotation_speed*2;
+	}
+
 }
 
 Player.prototype.draw_score = function(){
