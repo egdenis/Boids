@@ -9,7 +9,7 @@ function Player(color,keys){
 	this.angle =  Math.random()*2*Math.PI;
 	this.color_value = 400
 	this.speed = 1.45;
-	this.size = 4;
+	this.size = 3;
 	this.score = 0;
 }
 
@@ -23,6 +23,15 @@ Player.prototype.control = function(){
 	}
 
 }
+
+Player.prototype.draw = function() {
+	ctx.strokeStyle = this.rgba_color();
+	ctx.beginPath();
+	ctx.arc(this.x,this.y,this.size,0,Math.PI*2,true);
+	ctx.closePath();
+	ctx.stroke();
+};
+
 
 Player.prototype.draw_score = function(){
 	

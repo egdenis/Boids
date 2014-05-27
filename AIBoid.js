@@ -8,10 +8,11 @@ function AIBoid(near,color,keys){
 	this.color = color;
 	this.keys = keys;
 	this.angle =  Math.random()*2*Math.PI;
-	this.color_value = 1250
+	this.color_value = 950
 	this.speed = 1.45;
-	this.size = 4;
+	this.size = 3;
 	this.score = 0;
+	this.draw = Player.prototype.draw;
 	this.win = Player.prototype.win;
 	this.near_value = near;
 }

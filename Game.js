@@ -79,9 +79,9 @@ function Game(){
 	this.keys = [new Keys(39,37),new Keys(68,65),new Keys(74,71)];
 	this.players = new SpatialHash(this.near_value,canvas.width,canvas.height);
 	this.boids = new SpatialHash(this.near_value,canvas.width,canvas.height);
-	this.ui = new UI([new Button(canvas.width/2-120,canvas.height/2,100,50,"1-Player","menu",(this.init.bind(this,1,100,4))),
-					new Button(canvas.width/2,canvas.height/2,100,50,"2-Player","menu",(this.init.bind(this,2,100,3))),
-					new Button(canvas.width/2+120,canvas.height/2,100,50,"3-Player","menu",(this.init.bind(this,3,100,2))),
+	this.ui = new UI([new Button(canvas.width/2-120,canvas.height/2,100,50,"1-Player","menu",(this.init.bind(this,1,50,4))),
+					new Button(canvas.width/2,canvas.height/2,100,50,"2-Player","menu",(this.init.bind(this,2,50,3))),
+					new Button(canvas.width/2+120,canvas.height/2,100,50,"3-Player","menu",(this.init.bind(this,3,50,0))),
 					new Button(canvas.width/2,canvas.height/2+10,170,50,"Back to Menu","win",(function(){this.state = "menu"; this.players.clear();this.boids.clear;}.bind(this)))],
 					[new Box(canvas.width/2,canvas.height/2-60,0,0,"rgb(50,50,50)","rgb(50,50,50)","sharpCorners","menu","Influenza",1.3,"bold 63px Verdana"),
 					new Box(canvas.width/2,canvas.height/2,canvas.width,canvas.height,"rgb(240,240,240)","rgb(240,240,240)","sharpCorners","menu"),
@@ -90,7 +90,7 @@ function Game(){
 
 Game.prototype.init = function(number_of_players, number_of_boids,cpu){
 	this.state = "game";
-	var colors =   [[0,0,1],[0,1,0],[1,0,0],[1,0,1],[0,1,1]];
+	var colors =   [[0,1,1],[1,0,1],[0,1,0],[0,0,1],[1,0,0]];
 	for (var i = number_of_players-1; i >= 0; i--) {
 		this.players.put(new Player(colors[i],this.keys[i]))
 	};

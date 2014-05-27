@@ -109,7 +109,7 @@ Boid.prototype.increment_color = function(boids){
 }
 
 Boid.prototype.increment_score = function(){
-	GAME.score[this.color[0]][this.color[1]][this.color[2]] += this.color_value/15000;
+	GAME.score[this.color[0]][this.color[1]][this.color[2]] += this.color_value/25000;
 }
 
 Boid.prototype.rgba_color = function(r){
